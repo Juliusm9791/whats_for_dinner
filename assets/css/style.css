@@ -1,0 +1,36 @@
+header {
+width: 100%;
+}
+main {
+    display: flex;
+    flex-direction: row;
+}
+aside {
+    height: 400px;
+    flex: 1 0 200px;
+    border: 1px solid black;
+}
+
+#mainRigtSideDiv {
+    flex: 4 0 400px;
+    display: flex;
+    flex-direction: row;
+    height: 400px;
+}
+
+section {
+    flex-wrap: wrap;
+    flex: 1 0 200px;
+    border: 1px solid black;
+}
+
+@media screen and (max-width: 768px) {
+
+    main {
+        flex-direction: column;
+    }
+
+    #mainRigtSideDiv {
+        flex-direction: column;
+    }
+}
