@@ -20,10 +20,10 @@ function inputCity(){
         }
     let queryURLCity = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + APIKey;
     citySearch.val("");
-    fetchWeather(queryURLCity);
+    fetchGeolocation(queryURLCity);
 }
 
-function fetchWeather(queryURLCity) {
+function fetchGeolocation(queryURLCity) {
     fetch(queryURLCity)
     .then(function (response) {
          return response.json();
