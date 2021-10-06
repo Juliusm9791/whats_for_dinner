@@ -24,6 +24,10 @@ section {
     border: 1px solid black;
 }
 
+#map {
+    height: 100%;
+}
+
 @media screen and (max-width: 768px) {
 
     main {
