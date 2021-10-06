@@ -1,7 +1,26 @@
 let APIKey = "b929c0e3026118ea0292882110d701a8";
+let APIGoogle = "AIzaSyC8sMIbviv9SzuRsivsw0OCB4ZEgRYXIEQ";
 let citySearch = $("#citySearch");
 let cityButtonSearch = $("#cityButtonSearch");
 let geoArounMeButton = $("#geoArounMeButton");
+
+
+let map;
+let service;
+let infowindow;
+
+// Create the script tag, set the appropriate attributes
+var script = document.createElement('script');
+script.src = 'https://maps.googleapis.com/maps/api/js?key=' + APIGoogle + '&callback=initMap&libraries=places';
+script.async = true;
+
+// Attach your callback function to the `window` object
+window.initMap = function() {
+  // JS API is loaded and available
+};
+
+// Append the 'script' element to 'head'
+document.head.appendChild(script);
 
 // On click or enter button assigns city 
 cityButtonSearch.on("click", inputCity);
@@ -29,8 +48,14 @@ function fetchGeolocation(queryURLCity) {
          return response.json();
     })
     .then(function (data) {
-        console.log(data)
-    })
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: data[0].lat, lng: data[0].lon},
+            zoom: 14
+        });
+        let locationOnMap = new google.maps.LatLng(data[0].lat, data[0].lon);
+        infowindow = new google.maps.InfoWindow();
+        findPlace(locationOnMap);
+    });
 }
 
 geoArounMeButton.on("click", getLocation);
@@ -45,3 +70,35 @@ function getLocation() {
     console.log("Geolocation is not supported by this browser.");
   }
 }
+
+function findPlace(locationOnMap) {
+  let request  = {
+      location: locationOnMap,
+      radius: '1500',
+      type: ["restaurant"]
+    };
+  service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, (results, status) => {
+    console.log(results)
+    if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+      for (let i = 0; i < results.length; i++) {
+        createMarker(results[i]);
+      }
+      map.setCenter(results[0].geometry.location);
+    }
+  });
+}
+
+function createMarker(place) {
+    if (!place.geometry || !place.geometry.location) return;
+  
+    const marker = new google.maps.Marker({
+      map,
+      position: place.geometry.location,
+    });
+  
+    google.maps.event.addListener(marker, "click", () => {
+      infowindow.setContent(place.name || "");
+      infowindow.open(map);
+    });
+  }
