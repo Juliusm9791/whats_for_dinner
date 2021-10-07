@@ -79,6 +79,7 @@ function findPlace(locationOnMap) {
     };
   service = new google.maps.places.PlacesService(map);
   service.nearbySearch(request, (results, status) => {
+    ResultsData(results);
     console.log(results)
     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
       for (let i = 0; i < results.length; i++) {
@@ -102,3 +103,12 @@ function createMarker(place) {
       infowindow.open(map);
     });
   }
+
+function ResultsData(results) {
+    console.log(results)
+    for (var i = 0; i < results.length; i++) {
+        var searchResults = results[i].name
+        $(`#search-results-${i+1}`).append('<li>' + searchResults + '</li>');
+    }
+
+}
