@@ -48,13 +48,7 @@ function fetchGeolocation(queryURLCity) {
       return response.json();
     })
     .then(function (data) {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: data[0].lat, lng: data[0].lon },
-        zoom: 14
-      });
-      let locationOnMap = new google.maps.LatLng(data[0].lat, data[0].lon);
-      infowindow = new google.maps.InfoWindow();
-      findPlace(locationOnMap);
+      showMap(data[0].lat, data[0].lon);
     });
 }
 
@@ -63,12 +57,22 @@ geoArounMeButton.on("click", getLocation);
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      console.log("Latitude: ", position.coords.latitude);
-      console.log("Longitude: ", position.coords.longitude);
+      console.log(position.coords.latitude, position.coords.longitude);
+      showMap(position.coords.latitude, position.coords.longitude);
     });
   } else {
     console.log("Geolocation is not supported by this browser.");
   }
+}
+
+function showMap(lat, lon){
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: lat, lng: lon },
+    zoom: 14
+  });
+  let locationOnMap = new google.maps.LatLng(lat, lon);
+  infowindow = new google.maps.InfoWindow();
+  findPlace(locationOnMap);
 }
 
 function findPlace(locationOnMap) {
@@ -80,7 +84,7 @@ function findPlace(locationOnMap) {
   service = new google.maps.places.PlacesService(map);
   service.nearbySearch(request, (results, status) => {
     ResultsData(results);
-    console.log(results)
+    console.log(results);
     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
       for (let i = 0; i < results.length; i++) {
         createMarker(results[i]);
