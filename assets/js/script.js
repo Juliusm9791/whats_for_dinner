@@ -121,10 +121,11 @@ function createMarker(place) {
 }
 
 function ResultsData(results) {
+    $('#Search-List').empty();
     console.log(results)
     for (var i = 0; i < results.length; i++) {
         var searchResults = results[i].name
-        $(`#search-results-${i+1}`).append('<li>' + searchResults + '</li>');
+        $(`#Search-List`).append('<li>' + searchResults + '</li>');
     }
 
 }
