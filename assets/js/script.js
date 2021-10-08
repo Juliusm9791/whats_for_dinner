@@ -76,16 +76,20 @@ function showMap(lat, lon){
 }
 
 function findPlace(locationOnMap) {
+  $('#Search-List').empty();   // clean list before new search
   let request = {
     location: locationOnMap,
     radius: '1500',
-    type: ["restaurant"]
+    type: ["restaurant"],
   };
   service = new google.maps.places.PlacesService(map);
-  service.nearbySearch(request, (results, status) => {
-    ResultsData(results);
+  service.nearbySearch(request, (results, status) => {  // add after status" , pagetoken"  - for more than 20 results
     console.log(results);
+    // if (pagetoken.hasNextPage) {
+    //   pagetoken.nextPage(results);
+    // }
     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+      ResultsData(results);
       for (let i = 0; i < results.length; i++) {
         createMarker(results[i]);
       }
@@ -109,24 +113,51 @@ function createMarker(place) {
     nameElement.textContent = place.name;
     content.appendChild(nameElement);
 
-    const placeIdElement = document.createElement("p");
+    const placeAddress = document.createElement("p");
 
-    placeIdElement.textContent = place.vicinity;
-    content.appendChild(placeIdElement);
+    placeAddress.textContent = place.vicinity;
+    content.appendChild(placeAddress);
 
-    const placeAddressElement = document.createElement("p");
+    const placePriceLevel = document.createElement("p");
 
-    placeAddressElement.textContent = "Rating: " + place.rating;
-    content.appendChild(placeAddressElement);
+    placePriceLevel.textContent = "Price Level: " + priceLevelConvert(place.price_level);
+    content.appendChild(placePriceLevel);
+
+    const placeRating = document.createElement("p");
+
+    placeRating.textContent = "Rating: " + place.rating;
+    content.appendChild(placeRating);
     
     infowindow.setContent(content);
     infowindow.open(map, marker);
   });
 }
 
+function priceLevelConvert(price_level){
+let returnPriceSymbol = "";
+  switch (price_level) {
+    case 0:
+      returnPriceSymbol = "free";
+      break;
+    case 1:
+      returnPriceSymbol = "$";
+      break;
+    case 2:
+      returnPriceSymbol = "$$";
+      break;
+    case 3:
+      returnPriceSymbol = "$$$";
+      break;
+    case 4:
+      returnPriceSymbol = "$$$$";
+      break;
+    default:
+      returnPriceSymbol = "No price info"
+  }
+  return returnPriceSymbol;
+}
+
 function ResultsData(results) {
-    $('#Search-List').empty();
-    console.log(results)
     for (var i = 0; i < results.length; i++) {
         var searchResults = results[i].name
         $(`#Search-List`).append('<li>' + searchResults + '</li>');
