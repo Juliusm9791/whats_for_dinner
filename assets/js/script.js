@@ -130,6 +130,17 @@ function ResultsData(results) {
     for (var i = 0; i < results.length; i++) {
         var searchResults = results[i].name
         $(`#Search-List`).append('<li>' + searchResults + '</li>');
+        $(`#Search-List`).append('<button type="button" class="restaurantSaveButton">Save</button>');
+
     }
 
+}
+
+let saveRestaurant = [];
+$('#Search-List').on("click", saveIt);
+
+function saveIt(event){
+  console.log("event")
+    saveRestaurant.push($(event.target).prev().text());
+    localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
 }
