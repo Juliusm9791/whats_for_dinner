@@ -134,9 +134,14 @@ function createMarker(place) {
     content.appendChild(placeSave);
     
     placeSave.addEventListener("click", () => {
-      let saveInfo = placeSave.parentElement.firstChild.textContent;
-      saveRestaurant.push(saveInfo);
-      console.log(saveInfo, saveRestaurant)
+      let restaurantInfo = {
+        name: "",
+        address: "",
+      }
+      restaurantInfo.name = placeSave.parentElement.firstChild.textContent;
+      restaurantInfo.address = placeSave.parentElement.children[1].textContent;
+      saveRestaurant.push(restaurantInfo);
+      localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
     });
 
     infowindow.setContent(content);
@@ -169,7 +174,6 @@ let returnPriceSymbol = "";
 }
 
 function ResultsData(results) {
-  console.log(results)
     for (var i = 0; i < results.length; i++) {
         var searchResults = results[i].name
         var searchAddress = results[i].vicinity
@@ -187,7 +191,13 @@ let saveRestaurant = [];
 $('#Search-List').on("click", saveIt);
 
 function saveIt(event){
-    saveRestaurant.push($(event.target).prev().text());
+    let restaurantInfo = {
+      name: "",
+      address: "",
+    }
+    restaurantInfo.name = $(event.target).prev().prev().text();
+    restaurantInfo.address = $(event.target).prev().text();
+    saveRestaurant.push(restaurantInfo);
     localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
 }
 
