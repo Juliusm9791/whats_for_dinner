@@ -158,11 +158,16 @@ let returnPriceSymbol = "";
 }
 
 function ResultsData(results) {
+  console.log(results)
     for (var i = 0; i < results.length; i++) {
         var searchResults = results[i].name
-        $(`#Search-List`).append('<li>' + searchResults + '</li>');
-        $(`#Search-List`).append('<button type="button" class="restaurantSaveButton">Save</button>');
+        var searchAddress = results[i].vicinity
+        var div = $('<div>');
 
+        div.append($('<h3>').text(searchResults));
+        div.append($('<p>').text(searchAddress));
+        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Save'));
+        $(`#Search-List`).append(div);
     }
 
 }

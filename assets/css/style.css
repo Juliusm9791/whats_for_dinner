@@ -39,6 +39,7 @@ section {
     }
 }
 
-ul {
-    list-style-type: none;
+#Search-List {
+    display: flex;
+    
 }
