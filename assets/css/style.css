@@ -38,3 +38,8 @@ section {
         flex-direction: column;
     }
 }
+
+#Search-List {
+    display: flex;
+    
+}
