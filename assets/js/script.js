@@ -191,14 +191,17 @@ let saveRestaurant = [];
 $('#Search-List').on("click", saveIt);
 
 function saveIt(event){
+  
     let restaurantInfo = {
       name: "",
       address: "",
     }
     restaurantInfo.name = $(event.target).prev().prev().text();
     restaurantInfo.address = $(event.target).prev().text();
-    saveRestaurant.push(restaurantInfo);
-    localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+    if (!checkArray(restaurantInfo)) {
+      saveRestaurant.push(restaurantInfo);
+      localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+    } 
 }
 
 $(document).ready(getDataFromMemory);
@@ -209,4 +212,35 @@ function getDataFromMemory() {
       saveRestaurant = [];
     }
     console.log(saveRestaurant)
+    printDataFromLocalStorage()
 }
+
+function printDataFromLocalStorage() {
+  for (var i = 0; i < saveRestaurant.length; i++) {
+   var saveSearchEl = $('#Saved-Search')
+   var div = $('<div>');
+
+        div.append($('<h3>').text(saveRestaurant[i].name));
+        div.append($('<p>').text(saveRestaurant[i].address));
+        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete'));
+        saveSearchEl.append(div);
+  }
+}
+
+function checkArray(restaurantInfo) {
+  console.log(restaurantInfo);
+  for (var i = 0; i < saveRestaurant.length; i++) {
+  if (saveRestaurant[i].name === restaurantInfo.name) {
+    console.log('Restaurant Exist')
+    return true;
+  }
+}}
+
+// $('#Saved-Search').on("click", deleteIt);
+
+// function deleteIt(event){
+//   console.log($('.restaurantSaveButton').children().index(this));
+//   console.log(event.target)
+//   console.log($(event.target).parent())
+//   $(event.target).parent().empty();
+// }
