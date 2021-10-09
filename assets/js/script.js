@@ -127,7 +127,18 @@ function createMarker(place) {
 
     placeRating.textContent = "Rating: " + place.rating;
     content.appendChild(placeRating);
+
+    const placeSave = document.createElement("button");
+
+    placeSave.textContent = "Save";
+    content.appendChild(placeSave);
     
+    placeSave.addEventListener("click", () => {
+      let saveInfo = placeSave.parentElement.firstChild.textContent;
+      saveRestaurant.push(saveInfo);
+      console.log(saveInfo, saveRestaurant)
+    });
+
     infowindow.setContent(content);
     infowindow.open(map, marker);
   });
