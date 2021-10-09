@@ -171,7 +171,16 @@ let saveRestaurant = [];
 $('#Search-List').on("click", saveIt);
 
 function saveIt(event){
-  console.log("event")
     saveRestaurant.push($(event.target).prev().text());
     localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+}
+
+$(document).ready(getDataFromMemory);
+    
+function getDataFromMemory() {
+  saveRestaurant = JSON.parse(localStorage.getItem("restaurants"));
+    if (saveRestaurant === null) {
+      saveRestaurant = [];
+    }
+    console.log(saveRestaurant)
 }
