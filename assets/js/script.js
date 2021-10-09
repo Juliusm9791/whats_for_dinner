@@ -218,11 +218,11 @@ function getDataFromMemory() {
 function printDataFromLocalStorage() {
   for (var i = 0; i < saveRestaurant.length; i++) {
    var saveSearchEl = $('#Saved-Search')
-   var div = $('<div>');
+   var div = $('<div>').attr('id', "location"+i);
 
         div.append($('<h3>').text(saveRestaurant[i].name));
         div.append($('<p>').text(saveRestaurant[i].address));
-        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete'));
+        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete').on('click', deleteIt));
         saveSearchEl.append(div);
   }
 }
@@ -236,11 +236,16 @@ function checkArray(restaurantInfo) {
   }
 }}
 
-// $('#Saved-Search').on("click", deleteIt);
+// $('.restaurantSaveButton').on("click", deleteIt);
 
-// function deleteIt(event){
-//   console.log($('.restaurantSaveButton').children().index(this));
-//   console.log(event.target)
-//   console.log($(event.target).parent())
-//   $(event.target).parent().empty();
-// }
+function deleteIt(event){
+  event.preventDefault();
+  var div = $(this).parent();
+  console.log(div);
+  // console.log($('.restaurantSaveButton').children().index(this));
+  id = div.attr("id").slice(8)
+  console.log(id)
+  // console.log(event.target)
+  // console.log($(event.target).parent())
+  $(event.target).parent().empty();
+}
