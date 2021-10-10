@@ -174,15 +174,16 @@ function priceLevelConvert(price_level) {
 }
 
 function ResultsData(results) {
-  for (var i = 0; i < results.length; i++) {
-    var searchResults = results[i].name
-    var searchAddress = results[i].vicinity
-    var div = $('<div>');
-    div.append($('<h3>').text(searchResults));
-    div.append($('<p>').text(searchAddress));
-    div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Save'));
-    $(`#Search-List`).append(div);
-  }
+    for (var i = 0; i < results.length; i++) {
+        var searchResults = results[i].name
+        var searchAddress = results[i].vicinity
+        var div = $('<div>');
+
+        div.append($('<h3>').text(searchResults));
+        div.append($('<p>').text(searchAddress));
+        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton button is-primary is-small').addClass('is-success').text('Save'));
+        $(`#Search-List`).append(div);
+    }
 }
 
 let saveRestaurant = [];
@@ -220,7 +221,7 @@ function printDataFromLocalStorage() {
     var div = $('<div>');  //.attr('id', "location"+i)
     div.append($('<h3>').text(saveRestaurant[i].name));
     div.append($('<p>').text(saveRestaurant[i].address));
-    div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete').on('click', deleteIt));
+    div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton button is-danger is-small').text('Delete').on('click', deleteIt));
     saveSearchEl.append(div);
   }
 }

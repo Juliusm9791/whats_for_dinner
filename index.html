@@ -1,48 +1,63 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <title>Page Title</title>
+  <title>What's For Dinner</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <link rel='stylesheet' type='text/css' media='screen' href='./assets/css/style.css'>
 </head>
-<body>
+
+<body class="container">
   <header>
-    <div>
-      <h1>Main header</h1>
+    <div class="hero is-primary">
+      <div class="hero-body">
+        <h1 class="title">What's For Dinner</h1>
+      </div>
     </div>
-    </div>
-      <label for="citySearch">Search for a City:</label>
-      <input type="text" id="citySearch" name="name" placeholder="Enter City">
-      <button type="submit" id="cityButtonSearch">Search</button>
-      <button type="submit" id="geoArounMeButton">Search Around Me</button>
-    </div>
+    <br>
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <label for="citySearch"><strong>Search for a City:</strong></label>
+        </div>
+        <div class="level-item">
+          <div class="field has-addons">
+            <input type="text" id="citySearch" name="name" placeholder="Enter City" class="input is-primary">
+            <button type="submit" id="cityButtonSearch" class="button is-success">Search</button>
+            <button type="submit" id="geoArounMeButton" class="button is-success">Search Around Me</button>
+          </div>
+        </div>
+      </div>
+    </div>  
   </header>
-<main>
-  <aside>
-    <div id="Saved-Search" class="content">
+  <main>
+    <aside>
+      <div id="Saved-Search" class="content">
 
+      </div>
+
+    </aside>
+    <div id="mainRigtSideDiv">
+      <section>
+        <div id="Search-List" class="content">
+
+
+        </div>
+
+      </section>
+      <section>
+        <div id="map" class="content">
+
+        </div>
+
+      </section>
     </div>
-
-  </aside>
-  <div id="mainRigtSideDiv">
-    <section>
-      <div id="Search-List" class="content">
-        
-
-      </div>
-
-    </section>
-    <section>
-      <div id="map" class="content">
-
-      </div>
-  
-    </section>
-  </div>
-</main>
+  </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src='./assets//js/script.js'></script>
 </body>
+
 </html>
