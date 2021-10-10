@@ -181,7 +181,7 @@ function ResultsData(results) {
 
         div.append($('<h3>').text(searchResults));
         div.append($('<p>').text(searchAddress));
-        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Save'));
+        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton button is-primary is-small').addClass('is-success').text('Save'));
         $(`#Search-List`).append(div);
     }
 
@@ -222,7 +222,7 @@ function printDataFromLocalStorage() {
 
         div.append($('<h3>').text(saveRestaurant[i].name));
         div.append($('<p>').text(saveRestaurant[i].address));
-        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete').on('click', deleteIt));
+        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton button is-danger is-small').text('Delete').on('click', deleteIt));
         saveSearchEl.append(div);
   }
 }

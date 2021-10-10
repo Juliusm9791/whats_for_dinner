@@ -1,5 +1,5 @@
 header {
-width: 100%;
+margin-bottom: 15px;
 }
 main {
     display: flex;
@@ -28,7 +28,11 @@ section {
     height: 100%;
 }
 
-@media screen and (max-width: 768px) {
+#geoArounMeButton {
+    margin-left: 15px;
+}
+
+/* @media screen and (max-width: 768px) {
 
     main {
         flex-direction: column;
@@ -37,5 +41,5 @@ section {
     #mainRigtSideDiv {
         flex-direction: column;
     }
-}
+} */
 
