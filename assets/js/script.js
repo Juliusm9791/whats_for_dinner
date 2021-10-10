@@ -57,7 +57,7 @@ geoArounMeButton.on("click", getLocation);
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      console.log(position.coords.latitude, position.coords.longitude);
+      // console.log(position.coords.latitude, position.coords.longitude);
       showMap(position.coords.latitude, position.coords.longitude);
     });
   } else {
@@ -65,7 +65,7 @@ function getLocation() {
   }
 }
 
-function showMap(lat, lon){
+function showMap(lat, lon) {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: lat, lng: lon },
     zoom: 14
@@ -132,7 +132,7 @@ function createMarker(place) {
 
     placeSave.textContent = "Save";
     content.appendChild(placeSave);
-    
+
     placeSave.addEventListener("click", () => {
       let restaurantInfo = {
         name: "",
@@ -149,8 +149,8 @@ function createMarker(place) {
   });
 }
 
-function priceLevelConvert(price_level){
-let returnPriceSymbol = "";
+function priceLevelConvert(price_level) {
+  let returnPriceSymbol = "";
   switch (price_level) {
     case 0:
       returnPriceSymbol = "free";
@@ -174,78 +174,72 @@ let returnPriceSymbol = "";
 }
 
 function ResultsData(results) {
-    for (var i = 0; i < results.length; i++) {
-        var searchResults = results[i].name
-        var searchAddress = results[i].vicinity
-        var div = $('<div>');
-
-        div.append($('<h3>').text(searchResults));
-        div.append($('<p>').text(searchAddress));
-        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Save'));
-        $(`#Search-List`).append(div);
-    }
-
+  for (var i = 0; i < results.length; i++) {
+    var searchResults = results[i].name
+    var searchAddress = results[i].vicinity
+    var div = $('<div>');
+    div.append($('<h3>').text(searchResults));
+    div.append($('<p>').text(searchAddress));
+    div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Save'));
+    $(`#Search-List`).append(div);
+  }
 }
 
 let saveRestaurant = [];
 $('#Search-List').on("click", saveIt);
 
-function saveIt(event){
-  
-    let restaurantInfo = {
-      name: "",
-      address: "",
-    }
-    restaurantInfo.name = $(event.target).prev().prev().text();
-    restaurantInfo.address = $(event.target).prev().text();
-    if (!checkArray(restaurantInfo)) {
-      saveRestaurant.push(restaurantInfo);
-      localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
-    } 
+function saveIt(event) {
+  let restaurantInfo = {
+    name: "",
+    address: "",
+  }
+  restaurantInfo.name = $(event.target).prev().prev().text();
+  restaurantInfo.address = $(event.target).prev().text();
+  if (!checkArray(restaurantInfo)) {
+    saveRestaurant.push(restaurantInfo);
+    localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+  }
+  $('#Saved-Search').empty();
+  printDataFromLocalStorage()
 }
 
+//Reads and displays from local storage
 $(document).ready(getDataFromMemory);
-    
+
 function getDataFromMemory() {
   saveRestaurant = JSON.parse(localStorage.getItem("restaurants"));
-    if (saveRestaurant === null) {
-      saveRestaurant = [];
-    }
-    console.log(saveRestaurant)
-    printDataFromLocalStorage()
+  if (saveRestaurant === null) {
+    saveRestaurant = [];
+  }
+  printDataFromLocalStorage()
 }
 
 function printDataFromLocalStorage() {
   for (var i = 0; i < saveRestaurant.length; i++) {
-   var saveSearchEl = $('#Saved-Search')
-   var div = $('<div>').attr('id', "location"+i);
-
-        div.append($('<h3>').text(saveRestaurant[i].name));
-        div.append($('<p>').text(saveRestaurant[i].address));
-        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete').on('click', deleteIt));
-        saveSearchEl.append(div);
+    var saveSearchEl = $('#Saved-Search')
+    var div = $('<div>');  //.attr('id', "location"+i)
+    div.append($('<h3>').text(saveRestaurant[i].name));
+    div.append($('<p>').text(saveRestaurant[i].address));
+    div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton').text('Delete').on('click', deleteIt));
+    saveSearchEl.append(div);
   }
 }
 
+// Checking saved array it elemrnt exist
 function checkArray(restaurantInfo) {
-  console.log(restaurantInfo);
   for (var i = 0; i < saveRestaurant.length; i++) {
-  if (saveRestaurant[i].name === restaurantInfo.name) {
-    console.log('Restaurant Exist')
-    return true;
+    if (saveRestaurant[i].name === restaurantInfo.name) {
+      console.log('Restaurant Exist')
+      return true;
+    }
   }
-}}
+}
 
-// $('.restaurantSaveButton').on("click", deleteIt);
-
-function deleteIt(event){
-  event.preventDefault();
-  var div = $(this).parent();
-  console.log(div);
-  // console.log($('.restaurantSaveButton').children().index(this));
-  id = div.attr("id").slice(8)
-  console.log(id)
-  // console.log(event.target)
-  // console.log($(event.target).parent())
-  $(event.target).parent().empty();
+// Deleting element from Saved list
+function deleteIt() {
+  let divIndex = $(this).parent().index();
+  saveRestaurant.splice(divIndex, 1)
+  localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+  $('#Saved-Search').empty();
+  printDataFromLocalStorage()
 }
