@@ -111,7 +111,7 @@ function createMarker(place) {
     const nameElement = document.createElement("h2");
 
     nameElement.textContent = place.name;
-    content.appendChild(nameElement);
+    content.appendChild(nameElement).setAttribute("style", "font-weight: bold;");
 
     const placeAddress = document.createElement("p");
 
@@ -120,12 +120,12 @@ function createMarker(place) {
 
     const placePriceLevel = document.createElement("p");
 
-    placePriceLevel.textContent = "Price Level: " + priceLevelConvert(place.price_level);
+    placePriceLevel.innerHTML = "<strong>Price Level: </strong>" + priceLevelConvert(place.price_level);
     content.appendChild(placePriceLevel);
 
     const placeRating = document.createElement("p");
 
-    placeRating.textContent = "Rating: " + place.rating;
+    placeRating.innerHTML = "<strong>Rating: </strong>" + place.rating;
     content.appendChild(placeRating);
 
     const placeSave = document.createElement("button");
@@ -177,25 +177,29 @@ function ResultsData(results) {
     for (var i = 0; i < results.length; i++) {
         var searchResults = results[i].name
         var searchAddress = results[i].vicinity
-        var div = $('<div>');
+        var div1 = $('<div>').addClass("card customCardHead");
+        var div2 = $('<div>').addClass("card-header");
+        div2.append($('<p>').text(searchResults).addClass("card-header-title"));
+        div2.append($('<button type="button" class="card-header-icon button is-success is-small">Save</button>').on("click", saveIt));
 
-        div.append($('<h3>').text(searchResults));
-        div.append($('<p>').text(searchAddress));
-        div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton button is-primary is-small').addClass('is-success').text('Save'));
-        $(`#Search-List`).append(div);
+        var div3 = $('<div>').addClass("card-content customCardText");
+        div3.append($('<p>').text(searchAddress).addClass("content"));
+
+        $('#Search-List').append(div1.append(div2));
+        $('#Search-List').append(div1.append(div3));
     }
 }
 
 let saveRestaurant = [];
-$('#Search-List').on("click", saveIt);
+// $('#Search-List').on("click", saveIt);
 
 function saveIt(event) {
   let restaurantInfo = {
     name: "",
     address: "",
   }
-  restaurantInfo.name = $(event.target).prev().prev().text();
-  restaurantInfo.address = $(event.target).prev().text();
+  restaurantInfo.name = $(event.target).prev().text();
+  restaurantInfo.address = $(event.target).parent().next().children().eq(0).text();
   if (!checkArray(restaurantInfo)) {
     saveRestaurant.push(restaurantInfo);
     localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
@@ -217,12 +221,16 @@ function getDataFromMemory() {
 
 function printDataFromLocalStorage() {
   for (var i = 0; i < saveRestaurant.length; i++) {
-    var saveSearchEl = $('#Saved-Search')
-    var div = $('<div>');  //.attr('id', "location"+i)
-    div.append($('<h3>').text(saveRestaurant[i].name));
-    div.append($('<p>').text(saveRestaurant[i].address));
-    div.append($('<button>').attr('type', 'button').addClass('restaurantSaveButton button is-danger is-small').text('Delete').on('click', deleteIt));
-    saveSearchEl.append(div);
+    var div1 = $('<div>').addClass("card customCardHead customCursor");
+    var div2 = $('<div>').addClass("card-header");
+    div2.append($('<p>').text(saveRestaurant[i].name).addClass("card-header-title"));
+    div2.append($('<button type="button" class="card-header-icon button is-danger is-small">Delete</button>').on("click", deleteIt));
+
+    var div3 = $('<div>').addClass("card-content customCardText");
+    div3.append($('<p>').text(saveRestaurant[i].address).addClass("content"));
+    
+    $('#Saved-Search').append(div1.append(div2).on("click", showOnMap));
+    $('#Saved-Search').append(div1.append(div3));
   }
 }
 
@@ -243,4 +251,8 @@ function deleteIt() {
   localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
   $('#Saved-Search').empty();
   printDataFromLocalStorage()
+}
+
+function showOnMap (){
+  console.log("will show it on map")
 }
