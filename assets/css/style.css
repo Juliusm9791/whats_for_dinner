@@ -6,22 +6,21 @@ main {
     flex-direction: row;
 }
 aside {
-    height: 400px;
+    padding-right: 5px;
     flex: 1 0 200px;
-    border: 1px solid black;
 }
 
 #mainRigtSideDiv {
     flex: 4 0 400px;
     display: flex;
     flex-direction: row;
-    height: 400px;
+    height: 500px;
 }
 
 section {
+    padding-left: 5px;
     flex-wrap: wrap;
     flex: 1 0 200px;
-    border: 1px solid black;
 }
 
 #map {
@@ -32,7 +31,23 @@ section {
     margin-left: 15px;
 }
 
-/* @media screen and (max-width: 768px) {
+.customCursor {
+    cursor: pointer;
+}
+
+.customCardHead .customCardText{
+    padding: 2px 10px;
+    display: none;
+}
+.customCardHead:hover .customCardText{
+    display: block;
+}
+
+@media screen and (max-width: 768px) {
+
+    aside {
+        margin-left: 5px;
+    }
 
     main {
         flex-direction: column;
@@ -41,5 +56,5 @@ section {
     #mainRigtSideDiv {
         flex-direction: column;
     }
-} */
+}
 
