@@ -34,6 +34,7 @@ citySearch.on("keyup", function (event) {
 function inputCity() {
   let city = citySearch.val();
   if (city === "") {
+    errorMsg('Error Enter city name');
     console.log('Error Enter city name')
     return;
   }
@@ -61,6 +62,7 @@ function getLocation() {
       showMap(position.coords.latitude, position.coords.longitude);
     });
   } else {
+    errorMsg("Geolocation is not supported by this browser.")
     console.log("Geolocation is not supported by this browser.");
   }
 }
@@ -209,6 +211,7 @@ function ResultsData(results) {
 }
 
 let saveRestaurant = [];
+// $('#Search-List').on("click", saveIt);
 
 function saveIt() {
   let restaurantInfo = {
@@ -262,6 +265,7 @@ function checkArray(restaurantInfo) {
   for (var i = 0; i < saveRestaurant.length; i++) {
     if (saveRestaurant[i].name === restaurantInfo.name) {
       console.log('Restaurant Exist')
+      errorMsg('Restaurant Exist');
       return true;
     }
   }
@@ -269,7 +273,7 @@ function checkArray(restaurantInfo) {
 
 // Deleting element from Saved list
 function deleteIt() {
-  let divIndex = $(this).parent().parent().index();
+  let divIndex = $(this).parent().index();
   saveRestaurant.splice(divIndex, 1)
   localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
   $('#Saved-Search').empty();
@@ -333,3 +337,10 @@ function initMapByAddress(placeIdFromArray, lat, lon) {
     }
   });
 }
+
+function errorMsg(msg) {
+  var myWindow = window.open("", "MsgWindow", "toolbar=no,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+  myWindow.document.write('<h1>' + msg + '</h1>');
+
+}
+
