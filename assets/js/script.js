@@ -84,7 +84,7 @@ function findPlace(locationOnMap) {
   };
   service = new google.maps.places.PlacesService(map);
   service.nearbySearch(request, (results, status) => {  // add after status" , pagetoken"  - for more than 20 results
-    console.log(results);
+    //console.log(results);
     // if (pagetoken.hasNextPage) {
     //   pagetoken.nextPage(results);
     // }
@@ -137,11 +137,22 @@ function createMarker(place) {
       let restaurantInfo = {
         name: "",
         address: "",
+        placeId: "",
+        lon: "",
+        lat: "",
       }
-      restaurantInfo.name = placeSave.parentElement.firstChild.textContent;
-      restaurantInfo.address = placeSave.parentElement.children[1].textContent;
-      saveRestaurant.push(restaurantInfo);
-      localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+
+      restaurantInfo.placeId = place.place_id;
+      restaurantInfo.name = place.name;
+      restaurantInfo.address = place.vicinity;
+      restaurantInfo.lon = place.geometry.viewport.Hb.g;
+      restaurantInfo.lat = place.geometry.viewport.tc.g;
+      if (!checkArray(restaurantInfo)) {
+        saveRestaurant.push(restaurantInfo);
+        localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
+      }
+      $('#Saved-Search').empty();
+      printDataFromLocalStorage()
     });
 
     infowindow.setContent(content);
@@ -174,32 +185,45 @@ function priceLevelConvert(price_level) {
 }
 
 function ResultsData(results) {
-    for (var i = 0; i < results.length; i++) {
-        var searchResults = results[i].name
-        var searchAddress = results[i].vicinity
-        var div1 = $('<div>').addClass("card customCardHead");
-        var div2 = $('<div>').addClass("card-header");
-        div2.append($('<p>').text(searchResults).addClass("card-header-title"));
-        div2.append($('<button type="button" class="card-header-icon button is-success is-small">Save</button>').on("click", saveIt));
+  for (var i = 0; i < results.length; i++) {
+    var searchResults = results[i].name
+    var placeId = results[i].place_id
+    var searchAddress = results[i].vicinity
+    var lat = results[i].geometry.viewport.tc.g;
+    var lon = results[i].geometry.viewport.Hb.g;
+    var div1 = $('<div>').addClass("card customCardHead");
+    var div2 = $('<div>').addClass("card-header");
 
-        var div3 = $('<div>').addClass("card-content customCardText");
-        div3.append($('<p>').text(searchAddress).addClass("content"));
+    div2.append($('<p>').text(lat).css("display", "none"))
+    div2.append($('<p>').text(lon).css("display", "none"))
+    div2.append($('<p>').text(placeId).css("display", "none"))
+    div2.append($('<p>').text(searchResults).addClass("card-header-title"));
+    div2.append($('<button type="button" class="card-header-icon button is-success is-small">Save</button>').on("click", saveIt));
 
-        $('#Search-List').append(div1.append(div2));
-        $('#Search-List').append(div1.append(div3));
-    }
+    var div3 = $('<div>').addClass("card-content customCardText");
+    div3.append($('<p>').text(searchAddress).addClass("content"));
+
+    $('#Search-List').append(div1.append(div2));
+    $('#Search-List').append(div1.append(div3));
+  }
 }
 
 let saveRestaurant = [];
 // $('#Search-List').on("click", saveIt);
 
-function saveIt(event) {
+function saveIt() {
   let restaurantInfo = {
     name: "",
     address: "",
+    placeId: "",
+    lon: "",
+    lat: "",
   }
-  restaurantInfo.name = $(event.target).prev().text();
-  restaurantInfo.address = $(event.target).parent().next().children().eq(0).text();
+  restaurantInfo.lat = parseFloat($(this).prev().prev().prev().prev().text());
+  restaurantInfo.lon = parseFloat($(this).prev().prev().prev().text());
+  restaurantInfo.placeId = $(this).prev().prev().text();
+  restaurantInfo.name = $(this).prev().text();
+  restaurantInfo.address = $(this).parent().next().children().eq(0).text();
   if (!checkArray(restaurantInfo)) {
     saveRestaurant.push(restaurantInfo);
     localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
@@ -228,9 +252,9 @@ function printDataFromLocalStorage() {
 
     var div3 = $('<div>').addClass("card-content customCardText");
     div3.append($('<p>').text(saveRestaurant[i].address).addClass("content"));
-    
-    $('#Saved-Search').append(div1.append(div2).on("click", showOnMap));
-    $('#Saved-Search').append(div1.append(div3));
+
+    $('#Saved-Search').append(div1.append(div2));
+    $('#Saved-Search').append(div1.append(div3).on("click", showOnMap));
   }
 }
 
@@ -253,6 +277,60 @@ function deleteIt() {
   printDataFromLocalStorage()
 }
 
-function showOnMap (){
-  console.log("will show it on map")
+function showOnMap() {
+  $('#Search-List').empty();
+  let placeIndex = $(this).index();
+  initMapByAddress(saveRestaurant[placeIndex].placeId, saveRestaurant[placeIndex].lat, saveRestaurant[placeIndex].lon)
+}
+
+function initMapByAddress(placeIdFromArray, lat, lon) {
+  const map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: lat, lng: lon },
+    zoom: 15,
+  });
+  const request = {
+    placeId: placeIdFromArray,
+  };
+  const infowindow = new google.maps.InfoWindow();
+  const service = new google.maps.places.PlacesService(map);
+
+  service.getDetails(request, (place, status) => {
+    if (
+      status === google.maps.places.PlacesServiceStatus.OK &&
+      place &&
+      place.geometry &&
+      place.geometry.location
+    ) {
+      const marker = new google.maps.Marker({
+        map,
+        position: place.geometry.location,
+      });
+
+      google.maps.event.addListener(marker, "click", () => {
+        const content = document.createElement("div");
+        const nameElement = document.createElement("h2");
+
+        nameElement.textContent = place.name;
+        content.appendChild(nameElement).setAttribute("style", "font-weight: bold;");
+
+        const placeAddress = document.createElement("p");
+
+        placeAddress.textContent = place.vicinity;
+        content.appendChild(placeAddress);
+
+        const placePriceLevel = document.createElement("p");
+
+        placePriceLevel.innerHTML = "<strong>Price Level: </strong>" + priceLevelConvert(place.price_level);
+        content.appendChild(placePriceLevel);
+
+        const placeRating = document.createElement("p");
+
+        placeRating.innerHTML = "<strong>Rating: </strong>" + place.rating;
+        content.appendChild(placeRating);
+
+        infowindow.setContent(content);
+        infowindow.open(map, marker);
+      });
+    }
+  });
 }
