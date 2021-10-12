@@ -56,5 +56,10 @@ section {
     #mainRigtSideDiv {
         flex-direction: column;
     }
+
+    #map {
+        height: 400px;
+        width: 100%;
+    }
 }
 
