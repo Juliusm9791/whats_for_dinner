@@ -31,11 +31,12 @@ citySearch.on("keyup", function (event) {
   }
 });
 
+// // Looking for a geo coordinates 
 function inputCity() {
   let city = citySearch.val();
   if (city === "") {
-    errorMsg('Error Enter city name');
-    console.log('Error Enter city name')
+    errorMsg('Enter City Name');
+    console.log('Enter City Name')
     return;
   }
   let queryURLCity = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + APIKey;
@@ -49,12 +50,18 @@ function fetchGeolocation(queryURLCity) {
       return response.json();
     })
     .then(function (data) {
-      showMap(data[0].lat, data[0].lon);
+      console.log(data)
+      if (data.length === 0){
+        errorMsg("Can't Find Entered City");
+      } else {
+        showMap(data[0].lat, data[0].lon);
+      }
     });
 }
 
 geoArounMeButton.on("click", getLocation);
 
+// Reading geolocation from browser
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -67,6 +74,7 @@ function getLocation() {
   }
 }
 
+// Displays map
 function showMap(lat, lon) {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: lat, lng: lon },
@@ -77,6 +85,7 @@ function showMap(lat, lon) {
   findPlace(locationOnMap);
 }
 
+//Searching for near by places
 function findPlace(locationOnMap) {
   $('#Search-List').empty();   // clean list before new search
   let request = {
@@ -100,6 +109,7 @@ function findPlace(locationOnMap) {
   });
 }
 
+//Creating pins on map with info
 function createMarker(place) {
   if (!place.geometry || !place.geometry.location) return;
 
@@ -135,6 +145,7 @@ function createMarker(place) {
     placeSave.textContent = "Save";
     content.appendChild(placeSave);
 
+// Saves in local memory from map
     placeSave.addEventListener("click", () => {
       let restaurantInfo = {
         name: "",
@@ -162,6 +173,7 @@ function createMarker(place) {
   });
 }
 
+// Converts price level  to symbols
 function priceLevelConvert(price_level) {
   let returnPriceSymbol = "";
   switch (price_level) {
@@ -186,6 +198,7 @@ function priceLevelConvert(price_level) {
   return returnPriceSymbol;
 }
 
+//Displays search resuls 
 function ResultsData(results) {
   for (var i = 0; i < results.length; i++) {
     var searchResults = results[i].name
@@ -211,8 +224,8 @@ function ResultsData(results) {
 }
 
 let saveRestaurant = [];
-// $('#Search-List').on("click", saveIt);
 
+// Saves in local memory from search list
 function saveIt() {
   let restaurantInfo = {
     name: "",
@@ -245,6 +258,7 @@ function getDataFromMemory() {
   printDataFromLocalStorage()
 }
 
+//Displays history
 function printDataFromLocalStorage() {
   for (var i = 0; i < saveRestaurant.length; i++) {
     var div1 = $('<div>').addClass("card customCardHead customCursor");
@@ -264,8 +278,8 @@ function printDataFromLocalStorage() {
 function checkArray(restaurantInfo) {
   for (var i = 0; i < saveRestaurant.length; i++) {
     if (saveRestaurant[i].name === restaurantInfo.name) {
-      console.log('Restaurant Exist')
-      errorMsg('Restaurant Exist');
+      console.log('Restaurant Exist In Your History')
+      errorMsg('Restaurant Exist In Your History');
       return true;
     }
   }
@@ -273,7 +287,7 @@ function checkArray(restaurantInfo) {
 
 // Deleting element from Saved list
 function deleteIt() {
-  let divIndex = $(this).parent().index();
+  let divIndex = $(this).parent().parent().index();
   saveRestaurant.splice(divIndex, 1)
   localStorage.setItem("restaurants", JSON.stringify(saveRestaurant));
   $('#Saved-Search').empty();
@@ -286,6 +300,7 @@ function showOnMap() {
   initMapByAddress(saveRestaurant[placeIndex].placeId, saveRestaurant[placeIndex].lat, saveRestaurant[placeIndex].lon)
 }
 
+//Displays map amd pin from saved history
 function initMapByAddress(placeIdFromArray, lat, lon) {
   const map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: lat, lng: lon },
@@ -338,9 +353,10 @@ function initMapByAddress(placeIdFromArray, lat, lon) {
   });
 }
 
+//Error mesage window
 function errorMsg(msg) {
-  var myWindow = window.open("", "MsgWindow", "toolbar=no,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+  var left = (screen.width - 400) / 2;
+  var top = (screen.height - 400) / 4;
+  var myWindow = window.open("Error", "MsgWindow", "toolbar=no,scrollbars=yes,resizable=yes,top=" + top + ",left=" + left + ",width=400,height=400");
   myWindow.document.write('<h1>' + msg + '</h1>');
-
 }
-
