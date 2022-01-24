@@ -1,6 +1,6 @@
 # Whats_for_dinner
 
-Whats_for_dinner is an application to navigate you to resturants wherever you would like. 
+Whats_for_dinner is an application to navigate you to restaurants wherever you would like. 
 You can save your famous restaurants, and you don't need to search it again.
 
 
